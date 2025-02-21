@@ -1,0 +1,49 @@
+import java.util.*;
+
+class TicketBookingSystem {
+    private static final int TOTAL_SEATS = 10;
+    private static boolean[] seats = new boolean[TOTAL_SEATS];
+    private static final Object lock = new Object();
+
+    static class BookingThread extends Thread {
+        private int seatNumber;
+
+        BookingThread(String name, int seatNumber, int priority) {
+            super(name);
+            this.seatNumber = seatNumber;
+            setPriority(priority);
+        }
+
+        public void run() {
+            synchronized (lock) {
+                if (!seats[seatNumber]) {
+                    seats[seatNumber] = true;
+                    System.out.println(getName() + " booked seat " + seatNumber);
+                } else {
+                    System.out.println(getName() + " failed to book seat " + seatNumber + " (Already booked)");
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        List<Thread> threads = new ArrayList<>();
+        threads.add(new BookingThread("VIP-1", 2, Thread.MAX_PRIORITY));
+        threads.add(new BookingThread("VIP-2", 4, Thread.MAX_PRIORITY));
+        threads.add(new BookingThread("User-1", 2, Thread.NORM_PRIORITY));
+        threads.add(new BookingThread("User-2", 4, Thread.NORM_PRIORITY));
+        threads.add(new BookingThread("User-3", 5, Thread.MIN_PRIORITY));
+
+        for (Thread t : threads) {
+            t.start();
+        }
+
+        for (Thread t : threads) {
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
