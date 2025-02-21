@@ -1,0 +1,49 @@
+import java.util.*;
+
+class Card {
+    String symbol;
+    String value;
+
+    Card(String symbol, String value) {
+        this.symbol = symbol;
+        this.value = value;
+    }
+
+    public String toString() {
+        return "Symbol: " + symbol + ", Value: " + value;
+    }
+}
+
+public class CardManager {
+    static Collection<Card> cards = new ArrayList<>();
+
+    static void addCard(String symbol, String value) {
+        cards.add(new Card(symbol, value));
+    }
+
+    static void searchBySymbol(String symbol) {
+        for (Card c : cards) {
+            if (c.symbol.equalsIgnoreCase(symbol)) {
+                System.out.println(c);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            System.out.println("1. Add Card\n2. Search Card by Symbol\n3. Exit");
+            int choice = sc.nextInt();
+            if (choice == 1) {
+                System.out.println("Enter Symbol and Value:");
+                addCard(sc.next(), sc.next());
+            } else if (choice == 2) {
+                System.out.println("Enter Symbol to search:");
+                searchBySymbol(sc.next());
+            } else if (choice == 3) {
+                break;
+            }
+        }
+        sc.close();
+    }
+}
